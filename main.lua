@@ -23,6 +23,7 @@ farmer = {
     ["handAngelSpeed"]= 10,
     ["handSvingDistens"] = math.pi,
     ["handSvingMiddel"] = 0,
+    ["hasKolided"] = false
 }
 
 
@@ -30,8 +31,21 @@ objects = {
     {
         ["type"] = "trees",
         ["color"] = {0.5, 0.8, 0},
-        {["x"] = 50 ,["y"] = 50 ,["size"]=20 ,["helth"]= 4},
+        ["drotype"] = "wood",
+        {["x"] = 100 ,["y"] = 50 ,["size"]=20 ,["helth"]= 4},
         {["x"] = 100,["y"] = 100,["size"]=30 ,["helth"]= 4}
+    },
+    {
+        ["type"] = "rock",
+        ["color"] = {0, 0, 0},
+        {["x"] = 500 ,["y"] = 50 ,["size"]=20 ,["helth"]= 4},
+        {["x"] = 100,["y"] = 500,["size"]=30 ,["helth"]= 4}
+    },
+    {
+        ["type"] = "corn",
+        ["color"] = {0.5, 0.5, 0},
+        {["x"] = 400 ,["y"] = 50 ,["size"]=20 ,["helth"]= 4},
+        {["x"] = 200,["y"] = 500,["size"]=30 ,["helth"]= 4}
     }
 }
 items = {
@@ -49,9 +63,7 @@ items = {
 
 cirkleKolider = function (positionx,positiony,size,table)
     for index, value in ipairs(table) do
-        if distansBetwen(positiony,positionx,table[index].x,table[index].y) < (size + table[index].size) then
-            -- print(distansBetwen(positiony,positionx,table[index].x,table[index].y))
-            -- print(size + table[index].size)
+        if distansBetwen(positionx,positiony,table[index].x,table[index].y) < (size + table[index].size) then
             return index
         end
     end
@@ -117,12 +129,20 @@ love.update = function (deltaTime)
     end
     -- world.framerate = math.floor(1/deltaTime)
     --farmer kolition och movment--
+    farmer.hasKolided = false
     for index, value in ipairs(objects) do
-        if cirkleKolider((farmer.positionX + (farmer.movmentX * deltaTime)),(farmer.positionY + (farmer.movmentY * deltaTime)),farmer.farmerSize,objects[index]) == false then
-            farmer.positionX = farmer.positionX + (farmer.movmentX * deltaTime)
-            farmer.positionY = farmer.positionY + (farmer.movmentY * deltaTime)
+        if cirkleKolider((farmer.positionX + (farmer.movmentX * deltaTime)),(farmer.positionY + (farmer.movmentY * deltaTime)),farmer.farmerSize,objects[index]) ~= false then
+            farmer.hasKolided = true
+            -- farmer.positionX = farmer.positionX + (farmer.movmentX * deltaTime)
+            -- farmer.positionY = farmer.positionY + (farmer.movmentY * deltaTime)
         end
+        
     end
+    if farmer.hasKolided == false then
+        farmer.positionX = farmer.positionX + (farmer.movmentX * deltaTime)
+        farmer.positionY = farmer.positionY + (farmer.movmentY * deltaTime)
+    end
+    farmer.hasKolided = false
 
     --hand--
     if farmer.isHand then
@@ -138,8 +158,6 @@ love.update = function (deltaTime)
                 farmer.HandAbelToHit = false
                 objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].helth = objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].helth - 1
                 if objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].helth <= 0 then
-                    items[1][1].x = 60
-                    -- objects.trees[cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects.trees)] = nil
                     table.remove(objects[index],cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index]))
                 end
             end
