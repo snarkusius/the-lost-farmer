@@ -22,7 +22,8 @@ farmer = {
     ["handAngel"]= 0,
     ["handAngelSpeed"]= 10,
     ["handSvingDistens"] = math.pi,
-    ["handSvingMiddel"] = 0
+    ["handSvingMiddel"] = 0,
+    ["amountOfWood"] = 0
 
 }
 
@@ -31,6 +32,13 @@ objects = {
     ["trees"] = {
         {["x"] = 50,["y"] = 50,["size"]=20,["helth"]= 4},
         {["x"] = 100,["y"] = 100,["size"]=30 ,["helth"]= 4 }
+    }
+}
+items = {
+    {
+        ["type"] = "wood",
+        ["color"] = {0.5 ,0.2,0},
+        {["x"] = 50,["y"] = 50,["size"]=20,["amount"]= 4},
     }
 }
 
@@ -144,11 +152,20 @@ love.draw=function ()
         love.graphics.setColor(0.5, 0, 0)
         love.graphics.circle("fill", farmer.handX, farmer.handY, farmer.handSize)
     end
-    --ritar träd--
+    --draw treas--
     love.graphics.setColor(0.5, 0.8, 0)
     for index, value in ipairs(objects.trees) do
         love.graphics.circle("fill", objects.trees[index].x , objects.trees[index].y , objects.trees[index].size )
     end
+    --draw items--
+    -- love.graphics.setColor(0.8, 0.2, 0)
+    for index, value in ipairs(items) do
+        love.graphics.setColor(items[index].color[1], items[index].color[2], items[index].color[3])
+        for index, value in ipairs(items[index]) do
+            love.graphics.circle("fill", objects.trees[index].x , objects.trees[index].y , objects.trees[index].size )
+        end
+    end
+    
     --overlais--
     love.graphics.setColor(1, 1, 1)
     love.graphics.print( world.framerate, world.frameratePositionX, world.frameratePositionY)
