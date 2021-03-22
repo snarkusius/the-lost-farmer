@@ -23,8 +23,6 @@ farmer = {
     ["handAngelSpeed"]= 10,
     ["handSvingDistens"] = math.pi,
     ["handSvingMiddel"] = 0,
-    ["amountOfWood"] = 0
-
 }
 
 
@@ -32,8 +30,8 @@ objects = {
     {
         ["type"] = "trees",
         ["color"] = {0.5, 0.8, 0},
-        {["x"] = 50,["y"] = 50,["size"]=20,["helth"]= 4},
-        {["x"] = 100,["y"] = 100,["size"]=30 ,["helth"]= 4 }
+        {["x"] = 50 ,["y"] = 50 ,["size"]=20 ,["helth"]= 4},
+        {["x"] = 100,["y"] = 100,["size"]=30 ,["helth"]= 4}
     }
 }
 items = {
@@ -41,6 +39,11 @@ items = {
         ["type"] = "wood",
         ["color"] = {0.5 ,0.2,0},
         {["x"] = 50,["y"] = 200,["size"]=20,["amount"]= 4},
+    },
+    {
+        ["type"] = "sten",
+        ["color"] = {1 ,1,1},
+        {["x"] = 100,["y"] = 200,["size"]=20,["amount"]= 4},
     }
 }
 
@@ -94,12 +97,12 @@ distansBetwen = function (firstX,firstY,sekonX,sekondY)
             if farmer.positionX < x then
                 farmer.handSvingMiddel = math.atan((y - farmer.positionY)/(x - farmer.positionX ))
                 farmer.isHand = true
-                farmer.A = farmer.handSvingMiddel - farmer.handSvingDistens/2 
+                farmer.handAngel = farmer.handSvingMiddel - farmer.handSvingDistens/2 
             end
             if farmer.positionX > x then
                 farmer.handSvingMiddel = math.pi + math.atan((y - farmer.positionY)/(x - farmer.positionX ))
                 farmer.isHand = true
-                farmer.A = farmer.handSvingMiddel - farmer.handSvingDistens/2 
+                farmer.handAngel = farmer.handSvingMiddel - farmer.handSvingDistens/2 
             end
             farmer.HandAbelToHit = true
     
@@ -114,30 +117,34 @@ love.update = function (deltaTime)
     end
     -- world.framerate = math.floor(1/deltaTime)
     --farmer kolition och movment--
-    if cirkleKolider((farmer.positionX + (farmer.movmentX * deltaTime)),(farmer.positionY + (farmer.movmentY * deltaTime)),farmer.farmerSize,objects[1]) == false then
-        farmer.positionX = farmer.positionX + (farmer.movmentX * deltaTime)
-        farmer.positionY = farmer.positionY + (farmer.movmentY * deltaTime)
+    for index, value in ipairs(objects) do
+        if cirkleKolider((farmer.positionX + (farmer.movmentX * deltaTime)),(farmer.positionY + (farmer.movmentY * deltaTime)),farmer.farmerSize,objects[index]) == false then
+            farmer.positionX = farmer.positionX + (farmer.movmentX * deltaTime)
+            farmer.positionY = farmer.positionY + (farmer.movmentY * deltaTime)
+        end
     end
+
     --hand--
     if farmer.isHand then
-        farmer.handX = farmer.positionX + (math.cos(farmer.A) * farmer.hand_distens)
-        farmer.handY = farmer.positionY + (math.sin(farmer.A) * farmer.hand_distens)
-        farmer.A = farmer.A + (farmer.A * deltaTime)
-        if farmer.A > farmer.handSvingMiddel + farmer.handSvingDistens/2 then
+        farmer.handX = farmer.positionX + (math.cos(farmer.handAngel) * farmer.hand_distens)
+        farmer.handY = farmer.positionY + (math.sin(farmer.handAngel) * farmer.hand_distens)
+        farmer.handAngel = farmer.handAngel + (farmer.handAngelSpeed * deltaTime)
+        if farmer.handAngel > farmer.handSvingMiddel + farmer.handSvingDistens/2 then
             farmer.isHand = false
         end
         --hand kolition--
-        if cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects.trees) ~= false and farmer.HandAbelToHit == true then
-            farmer.HandAbelToHit = false
-            print(objects.trees[cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects.trees)].helth)
-            objects.trees[cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects.trees)].helth = objects.trees[cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects.trees)].helth - 1 
-            print(objects.trees[cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects.trees)].helth)
-            if objects.trees[cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects.trees)].helth <= 0 then
-                print(objects.trees[cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects.trees)].helth)
-                -- objects.trees[cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects.trees)] = nil
-                table.remove(objects.trees,cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects.trees))
+        for index, value in ipairs(objects) do
+            if cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index]) ~= false and farmer.HandAbelToHit == true then
+                farmer.HandAbelToHit = false
+                objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].helth = objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].helth - 1
+                if objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].helth <= 0 then
+                    items[1][1].x = 60
+                    -- objects.trees[cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects.trees)] = nil
+                    table.remove(objects[index],cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index]))
+                end
             end
         end
+        
     end
 end
 
@@ -161,10 +168,6 @@ love.draw=function ()
             love.graphics.circle("fill", objects[index][index2].x , objects[index][index2].y , objects[index][index2].size )
         end
     end
-    -- love.graphics.setColor(0.5, 0.8, 0)
-    -- for index, value in ipairs(objects.trees) do
-    --     love.graphics.circle("fill", objects.trees[index].x , objects.trees[index].y , objects.trees[index].size )
-    -- end
     --draw items--
     for index, value in ipairs(items) do
         love.graphics.setColor(items[index].color[1], items[index].color[2], items[index].color[3])
