@@ -29,7 +29,9 @@ farmer = {
 
 
 objects = {
-    ["trees"] = {
+    {
+        ["type"] = "trees",
+        ["color"] = {0.5, 0.8, 0},
         {["x"] = 50,["y"] = 50,["size"]=20,["helth"]= 4},
         {["x"] = 100,["y"] = 100,["size"]=30 ,["helth"]= 4 }
     }
@@ -38,7 +40,7 @@ items = {
     {
         ["type"] = "wood",
         ["color"] = {0.5 ,0.2,0},
-        {["x"] = 50,["y"] = 50,["size"]=20,["amount"]= 4},
+        {["x"] = 50,["y"] = 200,["size"]=20,["amount"]= 4},
     }
 }
 
@@ -112,7 +114,7 @@ love.update = function (deltaTime)
     end
     -- world.framerate = math.floor(1/deltaTime)
     --farmer kolition och movment--
-    if cirkleKolider((farmer.positionX + (farmer.movmentX * deltaTime)),(farmer.positionY + (farmer.movmentY * deltaTime)),farmer.farmerSize,objects.trees) == false then
+    if cirkleKolider((farmer.positionX + (farmer.movmentX * deltaTime)),(farmer.positionY + (farmer.movmentY * deltaTime)),farmer.farmerSize,objects[1]) == false then
         farmer.positionX = farmer.positionX + (farmer.movmentX * deltaTime)
         farmer.positionY = farmer.positionY + (farmer.movmentY * deltaTime)
     end
@@ -153,16 +155,21 @@ love.draw=function ()
         love.graphics.circle("fill", farmer.handX, farmer.handY, farmer.handSize)
     end
     --draw treas--
-    love.graphics.setColor(0.5, 0.8, 0)
-    for index, value in ipairs(objects.trees) do
-        love.graphics.circle("fill", objects.trees[index].x , objects.trees[index].y , objects.trees[index].size )
+    for index, value in ipairs(objects) do
+        love.graphics.setColor(objects[index].color[1], objects[index].color[2], objects[index].color[3])
+        for index2, value in ipairs(objects[index]) do
+            love.graphics.circle("fill", objects[index][index2].x , objects[index][index2].y , objects[index][index2].size )
+        end
     end
+    -- love.graphics.setColor(0.5, 0.8, 0)
+    -- for index, value in ipairs(objects.trees) do
+    --     love.graphics.circle("fill", objects.trees[index].x , objects.trees[index].y , objects.trees[index].size )
+    -- end
     --draw items--
-    -- love.graphics.setColor(0.8, 0.2, 0)
     for index, value in ipairs(items) do
         love.graphics.setColor(items[index].color[1], items[index].color[2], items[index].color[3])
-        for index, value in ipairs(items[index]) do
-            love.graphics.circle("fill", objects.trees[index].x , objects.trees[index].y , objects.trees[index].size )
+        for index2, value in ipairs(items[index]) do
+            love.graphics.circle("fill", items[index][index2].x , items[index][index2].y , items[index][index2].size)
         end
     end
     
