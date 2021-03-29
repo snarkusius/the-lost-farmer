@@ -30,24 +30,31 @@ farmer = {
 objects = {
     {
         ["type"] = "trees",
-        ["color"] = {0.5, 0.8, 0},
+        ["color"] = {1, 1, 1},
+        ["offset"] = 5,
+        ["sprite"] = love.graphics.newImage("Assets/tree.png"),
         ["drotype"] = "wood",
-        {["x"] = 100 ,["y"] = 50 ,["size"]=20 ,["helth"]= 4},
-        {["x"] = 100,["y"] = 100,["size"]=30 ,["helth"]= 4}
+        {["x"] = 50 ,["y"] = 50 ,["size"]=10 ,["health"]= 4},
+        {["x"] = 100 ,["y"] = 100,["size"]=10 ,["health"]= 4}
     },
     {
         ["type"] = "rock",
-        ["color"] = {0, 0, 0},
-        {["x"] = 500 ,["y"] = 50 ,["size"]=20 ,["helth"]= 4},
-        {["x"] = 100,["y"] = 500,["size"]=30 ,["helth"]= 4}
+        ["color"] = {1, 1, 1},
+        ["offset"] = 15,
+        ["sprite"] = love.graphics.newImage("Assets/stone.png"),
+        {["x"] = 500 ,["y"] = 50 ,["size"]=15 ,["health"]= 4},
+        {["x"] = 100,["y"] = 500,["size"]=15 ,["health"]= 4}
     },
     {
         ["type"] = "corn",
-        ["color"] = {0.5, 0.5, 0},
-        {["x"] = 400 ,["y"] = 50 ,["size"]=20 ,["helth"]= 4},
-        {["x"] = 200,["y"] = 500,["size"]=30 ,["helth"]= 4}
+        ["color"] = {1, 1, 1},
+        ["offset"] = 10,
+        ["sprite"] = love.graphics.newImage("Assets/majs.png"),
+        {["x"] = 400 ,["y"] = 50 ,["size"]=10 ,["health"]= 4},
+        {["x"] = 200,["y"] = 500,["size"]=10 ,["health"]= 4}
     }
 }
+
 items = {
     {
         ["type"] = "wood",
@@ -56,7 +63,7 @@ items = {
     },
     {
         ["type"] = "sten",
-        ["color"] = {1 ,1,1},
+        ["color"] = {1,1,1},
         {["x"] = 100,["y"] = 200,["size"]=20,["amount"]= 4},
     }
 }
@@ -72,7 +79,7 @@ end
 distansBetwen = function (firstX,firstY,sekonX,sekondY)
     return math.sqrt(((firstX-sekonX)*(firstX-sekonX))+((firstY-sekondY)*(firstY-sekondY)))
  
- end
+end
 
     
     love.keypressed = function (key)
@@ -156,8 +163,8 @@ love.update = function (deltaTime)
         for index, value in ipairs(objects) do
             if cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index]) ~= false and farmer.HandAbelToHit == true then
                 farmer.HandAbelToHit = false
-                objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].helth = objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].helth - 1
-                if objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].helth <= 0 then
+                objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health = objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health - 1
+                if objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health <= 0 then
                     table.remove(objects[index],cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index]))
                 end
             end
@@ -184,6 +191,7 @@ love.draw=function ()
         love.graphics.setColor(objects[index].color[1], objects[index].color[2], objects[index].color[3])
         for index2, value in ipairs(objects[index]) do
             love.graphics.circle("fill", objects[index][index2].x , objects[index][index2].y , objects[index][index2].size )
+            love.graphics.draw(objects[index].sprite , objects[index][index2].x,objects[index][index2].y ,0,1,1,objects[index].sprite:getWidth()/2, objects[index].sprite:getHeight() - objects[index].offset)
         end
     end
     --draw items--
