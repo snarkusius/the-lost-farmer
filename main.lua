@@ -26,6 +26,36 @@ farmer = {
     ["hasKolided"] = false
 }
 
+objectPropeties = {
+    {
+        ["type"] = "trees",
+        ["color"] = {1, 1, 1},
+        ["offset"] = 5,
+        ["sprite"] = love.graphics.newImage("Assets/tree.png"),
+        ["spawnRateat"] = 0.5,
+        ["spawnChanse"] = 10,
+        ["dropAmount"] = 3
+    },
+    {
+        ["type"] = "rock",
+        ["color"] = {1, 1, 1},
+        ["offset"] = 15,
+        ["sprite"] = love.graphics.newImage("Assets/stone.png"),
+        ["spawnRateat"] = 0.5,
+        ["spawnChanse"] = 10,
+        ["dropAmount"] = 3
+    },
+    {
+        ["type"] = "corn",
+        ["color"] = {1, 1, 1},
+        ["offset"] = 10,
+        ["sprite"] = love.graphics.newImage("Assets/majs.png"),
+        ["spawnRateat"] = 0.5,
+        ["spawnChanse"] = 10,
+        ["dropAmount"] = 3,
+        ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png")
+    }
+}
 
 objects = {
     {
@@ -50,6 +80,7 @@ objects = {
         ["color"] = {1, 1, 1},
         ["offset"] = 10,
         ["sprite"] = love.graphics.newImage("Assets/majs.png"),
+        ["dropAmount"] = 3,
         {["x"] = 400 ,["y"] = 50 ,["size"]=10 ,["health"]= 4},
         {["x"] = 200,["y"] = 500,["size"]=10 ,["health"]= 4}
     }
@@ -57,13 +88,21 @@ objects = {
 
 items = {
     {
-        ["type"] = "wood",
+        ["type"] = "trees",
         ["color"] = {0.5 ,0.2,0},
+        ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png"),
         {["x"] = 50,["y"] = 200,["size"]=20,["amount"]= 4},
     },
     {
-        ["type"] = "sten",
+        ["type"] = "rock",
         ["color"] = {1,1,1},
+        ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png"),
+        {["x"] = 100,["y"] = 200,["size"]=20,["amount"]= 4},
+    },
+    {
+        ["type"] = "corn",
+        ["color"] = {1,1,0},
+        ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png"),
         {["x"] = 100,["y"] = 200,["size"]=20,["amount"]= 4},
     }
 }
@@ -95,6 +134,9 @@ end
         end
         if key == "d" then
                 farmer.movmentX = farmer.sped
+        end
+        if key == "escape" then
+            farmer.movmentX = farmer.sped
         end
     end
     love.keyreleased =function (key)
@@ -165,11 +207,21 @@ love.update = function (deltaTime)
                 farmer.HandAbelToHit = false
                 objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health = objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health - 1
                 if objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health <= 0 then
+                    for index2, value in ipairs(items) do
+                        if items[index2].type == objects[index].type then
+
+                            table.insert(items[index2], 
+                            {["x"] = objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].x,
+                             ["y"] = objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].y,
+                             ["size"]=20,
+                             ["amount"]= objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].amount})
+                        end
+                    end
                     table.remove(objects[index],cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index]))
+                   
                 end
             end
         end
-        
     end
 end
 
@@ -199,9 +251,10 @@ love.draw=function ()
         love.graphics.setColor(items[index].color[1], items[index].color[2], items[index].color[3])
         for index2, value in ipairs(items[index]) do
             love.graphics.circle("fill", items[index][index2].x , items[index][index2].y , items[index][index2].size)
+            love.graphics.draw( items[index].dropSprite ,  items[index][index2].x, items[index][index2].y ,0,1,1, items[index].dropSprite:getWidth()/2,  items[index].dropSprite:getHeight()/2 )
         end
     end
-    
+
     --overlais--
     love.graphics.setColor(1, 1, 1)
     love.graphics.print( world.framerate, world.frameratePositionX, world.frameratePositionY)
