@@ -28,7 +28,7 @@ farmer = {
 
 objectPropeties = {
     {
-        ["type"] = "trees",
+        ["type"] = "wood",
         ["color"] = {1, 1, 1},
         ["offset"] = 5,
         ["sprite"] = love.graphics.newImage("Assets/tree.png"),
@@ -37,7 +37,7 @@ objectPropeties = {
         ["dropAmount"] = 3
     },
     {
-        ["type"] = "rock",
+        ["type"] = "stone",
         ["color"] = {1, 1, 1},
         ["offset"] = 15,
         ["sprite"] = love.graphics.newImage("Assets/stone.png"),
@@ -59,7 +59,7 @@ objectPropeties = {
 
 objects = {
     {
-        ["type"] = "trees",
+        ["type"] = "wood",
         ["color"] = {1, 1, 1},
         ["offset"] = 5,
         ["sprite"] = love.graphics.newImage("Assets/tree.png"),
@@ -68,7 +68,7 @@ objects = {
         {["x"] = 100 ,["y"] = 100,["size"]=10 ,["health"]= 4}
     },
     {
-        ["type"] = "rock",
+        ["type"] = "stone",
         ["color"] = {1, 1, 1},
         ["offset"] = 15,
         ["sprite"] = love.graphics.newImage("Assets/stone.png"),
@@ -88,24 +88,52 @@ objects = {
 
 items = {
     {
-        ["type"] = "trees",
+        ["type"] = "wood",
         ["color"] = {0.5 ,0.2,0},
         ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png"),
-        {["x"] = 50,["y"] = 200,["size"]=20,["amount"]= 4},
+        {["x"] = 50,["y"] = 200,["size"]=10,["amount"]= 4},
     },
     {
-        ["type"] = "rock",
+        ["type"] = "stone",
         ["color"] = {1,1,1},
         ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png"),
-        {["x"] = 100,["y"] = 200,["size"]=20,["amount"]= 4},
+        {["x"] = 100,["y"] = 200,["size"]=10,["amount"]= 4},
     },
     {
         ["type"] = "corn",
         ["color"] = {1,1,0},
         ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png"),
-        {["x"] = 100,["y"] = 200,["size"]=20,["amount"]= 4},
+        {["x"] = 100,["y"] = 200,["size"]=10,["amount"]= 4},
     }
 }
+inventory = {
+    ["inventoryOutputString"] = "",
+    ["outputPosisionX"] = 750,
+    ["outputPosisionY"] = 50,
+    {
+        ["name"] = "wood",
+        ["amount"] = 0,
+        ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
+    },
+    {
+        ["name"] = "stone",
+        ["amount"] = 0,
+        ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
+    },
+    {
+        ["name"] = "corn",
+        ["amount"] = 0,
+        ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
+    }
+    }
+
+updateInventoryString = function (table)
+    local newString = ""
+    for index, value in ipairs(table) do
+       newString = newString .. table[index]["name"] .. " " .. tostring(table[index]["amount"]) .. "\n"
+    end
+    return newString
+end
 
 cirkleKolider = function (positionx,positiony,size,table)
     for index, value in ipairs(table) do
@@ -136,7 +164,7 @@ end
                 farmer.movmentX = farmer.sped
         end
         if key == "escape" then
-            farmer.movmentX = farmer.sped
+            love.event.quit()
         end
     end
     love.keyreleased =function (key)
@@ -171,19 +199,17 @@ end
      end
 
 love.update = function (deltaTime)
+    inventory.inventoryOutputString = updateInventoryString(inventory)
     world.time = world.time + deltaTime
     if world.time > world.framerateUpdate then
         world.framerate = math.floor(1/deltaTime)
         world.time=0
     end
-    -- world.framerate = math.floor(1/deltaTime)
-    --farmer kolition och movment--
+    --farmer kolition and movment--
     farmer.hasKolided = false
     for index, value in ipairs(objects) do
         if cirkleKolider((farmer.positionX + (farmer.movmentX * deltaTime)),(farmer.positionY + (farmer.movmentY * deltaTime)),farmer.farmerSize,objects[index]) ~= false then
             farmer.hasKolided = true
-            -- farmer.positionX = farmer.positionX + (farmer.movmentX * deltaTime)
-            -- farmer.positionY = farmer.positionY + (farmer.movmentY * deltaTime)
         end
         
     end
@@ -213,8 +239,9 @@ love.update = function (deltaTime)
                             table.insert(items[index2], 
                             {["x"] = objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].x,
                              ["y"] = objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].y,
-                             ["size"]=20,
-                             ["amount"]= objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].amount})
+                             ["size"]=10,
+                             ["amount"]= objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].amount
+                            })
                         end
                     end
                     table.remove(objects[index],cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index]))
@@ -258,4 +285,6 @@ love.draw=function ()
     --overlais--
     love.graphics.setColor(1, 1, 1)
     love.graphics.print( world.framerate, world.frameratePositionX, world.frameratePositionY)
+    --inventory--
+    love.graphics.print(inventory.inventoryOutputString,inventory.outputPosisionX,inventory.outputPosisionY)
 end
