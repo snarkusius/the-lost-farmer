@@ -129,6 +129,7 @@ love.load = function ()
         }
         }
     world.music:play()
+    world.music:setLooping(true)
     world.music:setVolume(0.3)
 end
 
