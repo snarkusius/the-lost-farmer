@@ -1,133 +1,139 @@
-world = {
-    ["framerate"]= 0,
-    ["framerateUpdate"]= 1,
-    ["frameratePositionX"]= 10,
-    ["frameratePositionY"]= 10,
-    ["time"]= 1
-}
-
-farmer = {
-    ["movmentX"]= 0,
-    ["movmentY"]= 0,
-    ["positionX"]= 400,
-    ["positionY"]= 300,
-    ["farmerSize"]= 20,
-    ["sped"]= 100,
-    ["handY"]= 200,
-    ["handX"]= 300,
-    ["handSize"]= 10,
-    ["hand_distens"]= 30,
-    ["isHand"]= false,
-    ["HandAbelToHit"]= true,
-    ["handAngel"]= 0,
-    ["handAngelSpeed"]= 10,
-    ["handSvingDistens"] = math.pi,
-    ["handSvingMiddel"] = 0,
-    ["hasKolided"] = false
-}
-
-objectPropeties = {
-    {
-        ["type"] = "wood",
-        ["color"] = {1, 1, 1},
-        ["offset"] = 5,
-        ["sprite"] = love.graphics.newImage("Assets/tree.png"),
-        ["spawnRateat"] = 0.5,
-        ["spawnChanse"] = 10,
-        ["dropAmount"] = 3
-    },
-    {
-        ["type"] = "stone",
-        ["color"] = {1, 1, 1},
-        ["offset"] = 15,
-        ["sprite"] = love.graphics.newImage("Assets/stone.png"),
-        ["spawnRateat"] = 0.5,
-        ["spawnChanse"] = 10,
-        ["dropAmount"] = 3
-    },
-    {
-        ["type"] = "corn",
-        ["color"] = {1, 1, 1},
-        ["offset"] = 10,
-        ["sprite"] = love.graphics.newImage("Assets/majs.png"),
-        ["spawnRateat"] = 0.5,
-        ["spawnChanse"] = 10,
-        ["dropAmount"] = 3,
-        ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png")
+love.load = function ()
+    world = {
+        ["framerate"]= 0,
+        ["framerateUpdate"]= 1,
+        ["frameratePositionX"]= 10,
+        ["frameratePositionY"]= 10,
+        ["time"] = 1,
+        ["music"] = love.audio.newSource("sound/PatakasWorld.wav" , "stream")
     }
-}
+    
+    farmer = {
+        ["movmentX"]= 0,
+        ["movmentY"]= 0,
+        ["positionX"]= 400,
+        ["positionY"]= 300,
+        ["farmerSize"]= 20,
+        ["sped"]= 100,
+        ["handY"]= 200,
+        ["handX"]= 300,
+        ["handSize"]= 10,
+        ["hand_distens"]= 30,
+        ["isHand"]= false,
+        ["HandAbelToHit"]= true,
+        ["handAngel"]= 0,
+        ["handAngelSpeed"]= 10,
+        ["handSvingDistens"] = math.pi,
+        ["handSvingMiddel"] = 0,
+        ["hasKolided"] = false
+    }
+    
+    objectPropeties = {
+        {
+            ["type"] = "wood",
+            ["color"] = {1, 1, 1},
+            ["offset"] = 5,
+            ["sprite"] = love.graphics.newImage("Assets/tree.png"),
+            ["spawnRateat"] = 0.5,
+            ["spawnChanse"] = 10,
+            ["dropAmount"] = 3
+        },
+        {
+            ["type"] = "stone",
+            ["color"] = {1, 1, 1},
+            ["offset"] = 15,
+            ["sprite"] = love.graphics.newImage("Assets/stone.png"),
+            ["spawnRateat"] = 0.5,
+            ["spawnChanse"] = 10,
+            ["dropAmount"] = 3
+        },
+        {
+            ["type"] = "corn",
+            ["color"] = {1, 1, 1},
+            ["offset"] = 10,
+            ["sprite"] = love.graphics.newImage("Assets/majs.png"),
+            ["spawnRateat"] = 0.5,
+            ["spawnChanse"] = 10,
+            ["dropAmount"] = 3,
+            ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png")
+        }
+    }
+    
+    objects = {
+        {
+            ["type"] = "wood",
+            ["color"] = {1, 1, 1},
+            ["offset"] = 5,
+            ["sprite"] = love.graphics.newImage("Assets/tree.png"),
+            ["drotype"] = "wood",
+            {["x"] = 50 ,["y"] = 50 ,["size"]=10 ,["health"]= 4},
+            {["x"] = 100 ,["y"] = 100,["size"]=10 ,["health"]= 4}
+        },
+        {
+            ["type"] = "stone",
+            ["color"] = {1, 1, 1},
+            ["offset"] = 15,
+            ["sprite"] = love.graphics.newImage("Assets/stone.png"),
+            {["x"] = 500 ,["y"] = 50 ,["size"]=15 ,["health"]= 4},
+            {["x"] = 100,["y"] = 500,["size"]=15 ,["health"]= 4}
+        },
+        {
+            ["type"] = "corn",
+            ["color"] = {1, 1, 1},
+            ["offset"] = 10,
+            ["sprite"] = love.graphics.newImage("Assets/majs.png"),
+            ["dropAmount"] = 3,
+            {["x"] = 400 ,["y"] = 50 ,["size"]=10 ,["health"]= 4},
+            {["x"] = 200,["y"] = 500,["size"]=10 ,["health"]= 4}
+        }
+    }
+    
+    items = {
+        {
+            ["type"] = "wood",
+            ["color"] = {1 ,1,1},
+            ["dropSprite"] = love.graphics.newImage("Assets/drops/log.png"),
+            {["x"] = 50,["y"] = 200,["size"]=10,["amount"]= 4},
+        },
+        {
+            ["type"] = "stone",
+            ["color"] = {1,1,1},
+            ["dropSprite"] = love.graphics.newImage("Assets/drops/stonePeas.png"),
+            {["x"] = 100,["y"] = 200,["size"]=10,["amount"]= 4},
+        },
+        {
+            ["type"] = "corn",
+            ["color"] = {1,1,1},
+            ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png"),
+            {["x"] = 100,["y"] = 600,["size"]=10,["amount"]= 4},
+        }
+    }
+    inventory = {
+        ["inventoryOutputString"] = "",
+        ["outputPosisionX"] = 750,
+        ["outputPosisionY"] = 50,
+        {
+            ["name"] = "wood",
+            ["amount"] = 0,
+            ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
+        },
+        {
+            ["name"] = "stone",
+            ["amount"] = 0,
+            ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
+        },
+        {
+            ["name"] = "corn",
+            ["amount"] = 0,
+            ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
+        }
+        }
+    world.music:play()
+    world.music:setVolume(0.3)
+end
 
-objects = {
-    {
-        ["type"] = "wood",
-        ["color"] = {1, 1, 1},
-        ["offset"] = 5,
-        ["sprite"] = love.graphics.newImage("Assets/tree.png"),
-        ["drotype"] = "wood",
-        {["x"] = 50 ,["y"] = 50 ,["size"]=10 ,["health"]= 4},
-        {["x"] = 100 ,["y"] = 100,["size"]=10 ,["health"]= 4}
-    },
-    {
-        ["type"] = "stone",
-        ["color"] = {1, 1, 1},
-        ["offset"] = 15,
-        ["sprite"] = love.graphics.newImage("Assets/stone.png"),
-        {["x"] = 500 ,["y"] = 50 ,["size"]=15 ,["health"]= 4},
-        {["x"] = 100,["y"] = 500,["size"]=15 ,["health"]= 4}
-    },
-    {
-        ["type"] = "corn",
-        ["color"] = {1, 1, 1},
-        ["offset"] = 10,
-        ["sprite"] = love.graphics.newImage("Assets/majs.png"),
-        ["dropAmount"] = 3,
-        {["x"] = 400 ,["y"] = 50 ,["size"]=10 ,["health"]= 4},
-        {["x"] = 200,["y"] = 500,["size"]=10 ,["health"]= 4}
-    }
-}
 
-items = {
-    {
-        ["type"] = "wood",
-        ["color"] = {0.5 ,0.2,0},
-        ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png"),
-        {["x"] = 50,["y"] = 200,["size"]=10,["amount"]= 4},
-    },
-    {
-        ["type"] = "stone",
-        ["color"] = {1,1,1},
-        ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png"),
-        {["x"] = 100,["y"] = 200,["size"]=10,["amount"]= 4},
-    },
-    {
-        ["type"] = "corn",
-        ["color"] = {1,1,0},
-        ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png"),
-        {["x"] = 100,["y"] = 200,["size"]=10,["amount"]= 4},
-    }
-}
-inventory = {
-    ["inventoryOutputString"] = "",
-    ["outputPosisionX"] = 750,
-    ["outputPosisionY"] = 50,
-    {
-        ["name"] = "wood",
-        ["amount"] = 0,
-        ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
-    },
-    {
-        ["name"] = "stone",
-        ["amount"] = 0,
-        ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
-    },
-    {
-        ["name"] = "corn",
-        ["amount"] = 0,
-        ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
-    }
-    }
-
-updateInventoryString = function (table)
+InventoryToString = function (table)
     local newString = ""
     for index, value in ipairs(table) do
        newString = newString .. table[index]["name"] .. " " .. tostring(table[index]["amount"]) .. "\n"
@@ -199,7 +205,7 @@ end
      end
 
 love.update = function (deltaTime)
-    inventory.inventoryOutputString = updateInventoryString(inventory)
+    inventory.inventoryOutputString = InventoryToString(inventory)
     world.time = world.time + deltaTime
     if world.time > world.framerateUpdate then
         world.framerate = math.floor(1/deltaTime)
