@@ -113,17 +113,17 @@ love.load = function ()
         ["outputPosisionX"] = 750,
         ["outputPosisionY"] = 50,
         {
-            ["name"] = "wood",
+            ["type"] = "wood",
             ["amount"] = 0,
             ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
         },
         {
-            ["name"] = "stone",
+            ["type"] = "stone",
             ["amount"] = 0,
             ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
         },
         {
-            ["name"] = "corn",
+            ["type"] = "corn",
             ["amount"] = 0,
             ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
         }
@@ -136,7 +136,7 @@ end
 InventoryToString = function (table)
     local newString = ""
     for index, value in ipairs(table) do
-       newString = newString .. table[index]["name"] .. " " .. tostring(table[index]["amount"]) .. "\n"
+       newString = newString .. table[index]["type"] .. " " .. tostring(table[index]["amount"]) .. "\n"
     end
     return newString
 end
@@ -254,6 +254,17 @@ love.update = function (deltaTime)
                    
                 end
             end
+        end
+    end
+    --item pickup--
+    for index, value in ipairs(items) do
+        if cirkleKolider(farmer.positionX,farmer.positionY,farmer.farmerSize,items[index]) then
+                for index2, value in ipairs(inventory) do
+                    if inventory[index2].type == items[index].type then
+                    inventory[index2].amount = inventory[index2].amount + items[index][cirkleKolider(farmer.positionX,farmer.positionY,farmer.farmerSize,items[index])].amount
+                    end
+                end
+            table.remove(items[index],cirkleKolider(farmer.positionX,farmer.positionY,farmer.farmerSize,items[index]))
         end
     end
 end
