@@ -2,11 +2,16 @@
 love.load = function ()
 
     world = {
+        ["screnSizeX"]= 800,
+        ["screnSizeY"]= 600,
         ["framerate"]= 0,
         ["framerateUpdate"]= 1,
         ["frameratePositionX"]= 10,
         ["frameratePositionY"]= 10,
-        ["time"] = 1,
+        ["time"] = 0,
+        ["timeOflastFrameUpdate"] = 0,
+        ["spawnUpdate"]= 1,
+        ["timeOflastSpawnUpdate"] = 0,
         ["music"] = love.audio.newSource("sound/PatakasWorld.wav" , "stream")
     }
     
@@ -33,44 +38,28 @@ love.load = function ()
     objectPropeties = {
         {
             ["type"] = "wood",
-            ["color"] = {1, 1, 1},
-            ["offset"] = 5,
-            ["sprite"] = love.graphics.newImage("Assets/tree.png"),
-            ["spawnRateat"] = 0.5,
             ["spawnChanse"] = 10,
-            ["dropAmount"] = 3
+            ["size"]=10,
+            ["amount"]= 4
+ 
         },
         {
             ["type"] = "stone",
-            ["color"] = {1, 1, 1},
-            ["offset"] = 15,
-            ["sprite"] = love.graphics.newImage("Assets/stone.png"),
-            ["spawnRateat"] = 0.5,
             ["spawnChanse"] = 10,
-            ["dropAmount"] = 3
+            ["size"]=15,
+            ["amount"]= 4
+
         },
         {
             ["type"] = "corn",
-            ["color"] = {1, 1, 1},
-            ["offset"] = 10,
-            ["sprite"] = love.graphics.newImage("Assets/majs.png"),
-            ["spawnRateat"] = 0.5,
             ["spawnChanse"] = 10,
-            ["dropAmount"] = 3,
-            ["dropSprite"] = love.graphics.newImage("Assets/drops/majskolv.png")
+            ["size"]=10,
+            ["amount"]= 4
         }
     }
     
     objects = {
-        {
-            ["type"] = "wood",
-            ["color"] = {1, 1, 1},
-            ["offset"] = 5,
-            ["sprite"] = love.graphics.newImage("Assets/tree.png"),
-            ["drotype"] = "wood",
-            {["x"] = 50 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5 },
-            {["x"] = 100 ,["y"] = 100,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
-        },
+        
         {
             ["type"] = "stone",
             ["color"] = {1, 1, 1},
@@ -87,6 +76,15 @@ love.load = function ()
             ["dropAmount"] = 3,
             {["x"] = 400 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5},
             {["x"] = 200,["y"] = 500,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
+        },
+        {
+            ["type"] = "wood",
+            ["color"] = {1, 1, 1},
+            ["offset"] = 5,
+            ["sprite"] = love.graphics.newImage("Assets/tree.png"),
+            ["drotype"] = "wood",
+            {["x"] = 50 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5 },
+            {["x"] = 100 ,["y"] = 100,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
         }
     }
     
@@ -221,9 +219,23 @@ love.update = function (deltaTime)
     end
     inventory.inventoryOutputString = generalFun.InventoryToString(inventory)
     world.time = world.time + deltaTime
-    if world.time > world.framerateUpdate then
+    if world.time > world.timeOflastFrameUpdate + world.framerateUpdate then
         world.framerate = math.floor(1/deltaTime)
-        world.time=0
+        world.timeOflastFrameUpdate = world.time
+    end
+    if world.time > world.timeOflastSpawnUpdate + world.spawnUpdate then
+        
+        world.timeOflastSpawnUpdate = world.time
+        for index, value in ipairs(objectPropeties) do
+            if love.math.random(100)< objectPropeties[index].spawnChanse then
+                for index2, value in ipairs(objects) do
+                    if objectPropeties[index].type == objects[index2].type  then
+                        table.insert(objects[index2],{["x"] = love.math.random(world.screnSizeX) ,["y"] = love.math.random(world.screnSizeY) ,["size"]= objectPropeties[index].size ,["health"]= 4 ,["amount"] = objectPropeties[index].amount})
+                    end
+                end
+            end
+        end
+        
     end
     --farmer kolition and movment--
     farmer.hasKolided = false
