@@ -1,5 +1,5 @@
 local M = {}
-InventoryToString = function (table)
+M.InventoryToString = function (table)
     local newString = ""
     for index, value in ipairs(table) do
        newString = newString .. table[index]["type"] .. " " .. tostring(table[index]["amount"]) .. "\n"
@@ -7,7 +7,7 @@ InventoryToString = function (table)
     return newString
 end
 
-cirkleKolider = function (positionx,positiony,size,table)
+M.cirkleKolider = function (positionx,positiony,size,table)
     for index, value in ipairs(table) do
         if distansBetwen(positionx,positiony,table[index].x,table[index].y) < (size + table[index].size) then
             return index
@@ -15,7 +15,7 @@ cirkleKolider = function (positionx,positiony,size,table)
     end
     return false
 end
-distansBetwen = function (firstX,firstY,sekonX,sekondY)
+M.distansBetwen = function (firstX,firstY,sekonX,sekondY)
     return math.sqrt(((firstX-sekonX)*(firstX-sekonX))+((firstY-sekondY)*(firstY-sekondY)))
  
 end

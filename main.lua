@@ -133,15 +133,15 @@ love.load = function ()
     world.music:setVolume(0.3)
     -- love.window.setFullscreen( true )
 end
+local InventoryToString = require("generalFunktions").InventoryToString
 
-
-InventoryToString = function (table)
-    local newString = ""
-    for index, value in ipairs(table) do
-       newString = newString .. table[index]["type"] .. " " .. tostring(table[index]["amount"]) .. "\n"
-    end
-    return newString
-end
+-- InventoryToString = function (table)
+--     local newString = ""
+--     for index, value in ipairs(table) do
+--        newString = newString .. table[index]["type"] .. " " .. tostring(table[index]["amount"]) .. "\n"
+--     end
+--     return newString
+-- end
 
 cirkleKolider = function (positionx,positiony,size,table)
     for index, value in ipairs(table) do
