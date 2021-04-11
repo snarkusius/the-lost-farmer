@@ -66,16 +66,16 @@ love.load = function ()
             ["offset"] = 5,
             ["sprite"] = love.graphics.newImage("Assets/tree.png"),
             ["drotype"] = "wood",
-            {["x"] = 50 ,["y"] = 50 ,["size"]=10 ,["health"]= 4},
-            {["x"] = 100 ,["y"] = 100,["size"]=10 ,["health"]= 4}
+            {["x"] = 50 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5 },
+            {["x"] = 100 ,["y"] = 100,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
         },
         {
             ["type"] = "stone",
             ["color"] = {1, 1, 1},
             ["offset"] = 15,
             ["sprite"] = love.graphics.newImage("Assets/stone.png"),
-            {["x"] = 500 ,["y"] = 50 ,["size"]=15 ,["health"]= 4},
-            {["x"] = 100,["y"] = 500,["size"]=15 ,["health"]= 4}
+            {["x"] = 500 ,["y"] = 50 ,["size"]=15 ,["health"]= 4 ,["amount"] = 5},
+            {["x"] = 100,["y"] = 500,["size"]=15 ,["health"]= 4 ,["amount"] = 5}
         },
         {
             ["type"] = "corn",
@@ -83,8 +83,8 @@ love.load = function ()
             ["offset"] = 10,
             ["sprite"] = love.graphics.newImage("Assets/majs.png"),
             ["dropAmount"] = 3,
-            {["x"] = 400 ,["y"] = 50 ,["size"]=10 ,["health"]= 4},
-            {["x"] = 200,["y"] = 500,["size"]=10 ,["health"]= 4}
+            {["x"] = 400 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5},
+            {["x"] = 200,["y"] = 500,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
         }
     }
     
@@ -131,6 +131,7 @@ love.load = function ()
     world.music:play()
     world.music:setLooping(true)
     world.music:setVolume(0.3)
+    -- love.window.setFullscreen( true )
 end
 
 
