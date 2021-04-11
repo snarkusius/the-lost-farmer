@@ -15,7 +15,7 @@ M.cirkleKolider = function (positionx,positiony,size,table)
     end
     return false
 end
-M.distansBetwen = function (firstX,firstY,sekonX,sekondY)
+distansBetwen = function (firstX,firstY,sekonX,sekondY)
     return math.sqrt(((firstX-sekonX)*(firstX-sekonX))+((firstY-sekondY)*(firstY-sekondY)))
  
 end

@@ -1,4 +1,6 @@
+
 love.load = function ()
+
     world = {
         ["framerate"]= 0,
         ["framerateUpdate"]= 1,
@@ -128,36 +130,18 @@ love.load = function ()
             ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
         }
         }
+    
+    -- love.window.setFullscreen( true )
+    startScreen = love.graphics.newImage("backgrounds/start.png")
+    tutorialScreen = love.graphics.newImage("backgrounds/tutorial.png")
     world.music:play()
     world.music:setLooping(true)
     world.music:setVolume(0.3)
-    -- love.window.setFullscreen( true )
-end
-local InventoryToString = require("generalFunktions").InventoryToString
-
--- InventoryToString = function (table)
---     local newString = ""
---     for index, value in ipairs(table) do
---        newString = newString .. table[index]["type"] .. " " .. tostring(table[index]["amount"]) .. "\n"
---     end
---     return newString
--- end
-
-cirkleKolider = function (positionx,positiony,size,table)
-    for index, value in ipairs(table) do
-        if distansBetwen(positionx,positiony,table[index].x,table[index].y) < (size + table[index].size) then
-            return index
-        end
-    end
-    return false
-end
-distansBetwen = function (firstX,firstY,sekonX,sekondY)
-    return math.sqrt(((firstX-sekonX)*(firstX-sekonX))+((firstY-sekondY)*(firstY-sekondY)))
- 
+    generalFun = require("generalFunktions")
+    worldState = 1
 end
 
-    
-    love.keypressed = function (key)
+love.keypressed = function (key)
         --farmer key preses--
         if key == "w" then
                 farmer.movmentY = 1 - farmer.sped
@@ -172,10 +156,13 @@ end
                 farmer.movmentX = farmer.sped
         end
         if key == "escape" then
-            love.event.quit()
+            if worldState == 1 then
+                love.event.quit()
+            end
+            worldState = 1
         end
     end
-    love.keyreleased =function (key)
+love.keyreleased =function (key)
         if key == "w" then
             farmer.movmentY = 0
         end
@@ -189,7 +176,26 @@ end
             farmer.movmentX = 0
         end
     end
-    function love.mousepressed(x, y, button, istouch)
+love.mousepressed =function (x, y, button, istouch)
+    if worldState == 1 then
+        if button == 1 then 
+            if x > 263 and x < 537 and y > 150 and y < 236 then
+                worldState = 2
+            end
+            if x > 238 and x < 624 and y > 250 and y < 336 then
+                worldState = 3
+            end
+        end
+        return
+    end
+    if worldState == 3 then
+        if button == 1 then 
+            if x > 604 and x < 794 and y > 464  and y < 518 then
+                worldState = 1
+            end
+        end
+        return
+    end
         if button == 1 and farmer.isHand == false then 
             if farmer.positionX < x then
                 farmer.handSvingMiddel = math.atan((y - farmer.positionY)/(x - farmer.positionX ))
@@ -207,7 +213,13 @@ end
      end
 
 love.update = function (deltaTime)
-    inventory.inventoryOutputString = InventoryToString(inventory)
+    if worldState == 1 then
+        return
+    end
+    if worldState == 3 then
+        return
+    end
+    inventory.inventoryOutputString = generalFun.InventoryToString(inventory)
     world.time = world.time + deltaTime
     if world.time > world.framerateUpdate then
         world.framerate = math.floor(1/deltaTime)
@@ -216,7 +228,7 @@ love.update = function (deltaTime)
     --farmer kolition and movment--
     farmer.hasKolided = false
     for index, value in ipairs(objects) do
-        if cirkleKolider((farmer.positionX + (farmer.movmentX * deltaTime)),(farmer.positionY + (farmer.movmentY * deltaTime)),farmer.farmerSize,objects[index]) ~= false then
+        if generalFun.cirkleKolider((farmer.positionX + (farmer.movmentX * deltaTime)),(farmer.positionY + (farmer.movmentY * deltaTime)),farmer.farmerSize,objects[index]) ~= false then
             farmer.hasKolided = true
         end
         
@@ -237,22 +249,22 @@ love.update = function (deltaTime)
         end
         --hand kolition--
         for index, value in ipairs(objects) do
-            if cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index]) ~= false and farmer.HandAbelToHit == true then
+            if generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index]) ~= false and farmer.HandAbelToHit == true then
                 farmer.HandAbelToHit = false
-                objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health = objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health - 1
-                if objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health <= 0 then
+                objects[index][generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health = objects[index][generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health - 1
+                if objects[index][generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health <= 0 then
                     for index2, value in ipairs(items) do
                         if items[index2].type == objects[index].type then
 
                             table.insert(items[index2], 
-                            {["x"] = objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].x,
-                             ["y"] = objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].y,
+                            {["x"] = objects[index][generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].x,
+                             ["y"] = objects[index][generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].y,
                              ["size"]=10,
-                             ["amount"]= objects[index][cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].amount
+                             ["amount"]= objects[index][generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].amount
                             })
                         end
                     end
-                    table.remove(objects[index],cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index]))
+                    table.remove(objects[index],generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index]))
                    
                 end
             end
@@ -260,18 +272,26 @@ love.update = function (deltaTime)
     end
     --item pickup--
     for index, value in ipairs(items) do
-        if cirkleKolider(farmer.positionX,farmer.positionY,farmer.farmerSize,items[index]) then
+        if generalFun.cirkleKolider(farmer.positionX,farmer.positionY,farmer.farmerSize,items[index]) then
                 for index2, value in ipairs(inventory) do
                     if inventory[index2].type == items[index].type then
-                    inventory[index2].amount = inventory[index2].amount + items[index][cirkleKolider(farmer.positionX,farmer.positionY,farmer.farmerSize,items[index])].amount
+                    inventory[index2].amount = inventory[index2].amount + items[index][generalFun.cirkleKolider(farmer.positionX,farmer.positionY,farmer.farmerSize,items[index])].amount
                     end
                 end
-            table.remove(items[index],cirkleKolider(farmer.positionX,farmer.positionY,farmer.farmerSize,items[index]))
+            table.remove(items[index],generalFun.cirkleKolider(farmer.positionX,farmer.positionY,farmer.farmerSize,items[index]))
         end
     end
 end
 
 love.draw=function ()
+    if worldState == 1 then
+        love.graphics.draw(startScreen, 0,0,0,1,1,0,0)
+        return
+    end
+    if worldState == 3 then
+        love.graphics.draw(tutorialScreen, 0,0,0,1,1,0,0)
+        return
+    end
     love.graphics.setBackgroundColor( 0.3, 0.5, 0, 1 )
     
     --drawing farmer--
@@ -300,7 +320,6 @@ love.draw=function ()
             love.graphics.draw( items[index].dropSprite ,  items[index][index2].x, items[index][index2].y ,0,1,1, items[index].dropSprite:getWidth()/2,  items[index].dropSprite:getHeight()/2 )
         end
     end
-
     --overlais--
     love.graphics.setColor(1, 1, 1)
     love.graphics.print( world.framerate, world.frameratePositionX, world.frameratePositionY)
