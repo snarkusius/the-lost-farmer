@@ -2,6 +2,7 @@
 love.load = function ()
 
     world = {
+        ["state"] = 1,
         ["screnSizeX"]= 800,
         ["screnSizeY"]= 600,
         ["framerate"]= 0,
@@ -28,6 +29,7 @@ love.load = function ()
         ["hand_distens"]= 30,
         ["isHand"]= false,
         ["HandAbelToHit"]= true,
+        ["huitSound"]= love.audio.newSource("sound/hit.wav" , "stream"),
         ["handAngel"]= 0,
         ["handAngelSpeed"]= 10,
         ["handSvingDistens"] = math.pi,
@@ -85,7 +87,17 @@ love.load = function ()
             ["drotype"] = "wood",
             {["x"] = 50 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5 },
             {["x"] = 100 ,["y"] = 100,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
+        },
+        {
+            ["type"] = "barel",
+            ["color"] = {1, 1, 1},
+            ["offset"] = 5,
+            ["sprite"] = love.graphics.newImage("Assets/struktures/barel.png"),
+            ["drotype"] = "wood",
+            {["x"] = 60 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5 },
+            {["x"] = 100 ,["y"] = 75,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
         }
+
     }
     
     items = {
@@ -136,7 +148,7 @@ love.load = function ()
     world.music:setLooping(true)
     world.music:setVolume(0.3)
     generalFun = require("generalFunktions")
-    worldState = 1
+
 end
 
 love.keypressed = function (key)
@@ -154,10 +166,10 @@ love.keypressed = function (key)
                 farmer.movmentX = farmer.sped
         end
         if key == "escape" then
-            if worldState == 1 then
+            if world.state == 1 then
                 love.event.quit()
             end
-            worldState = 1
+            world.state = 1
         end
     end
 love.keyreleased =function (key)
@@ -175,21 +187,21 @@ love.keyreleased =function (key)
         end
     end
 love.mousepressed =function (x, y, button, istouch)
-    if worldState == 1 then
+    if world.state == 1 then
         if button == 1 then 
             if x > 263 and x < 537 and y > 150 and y < 236 then
-                worldState = 2
+                world.state = 2
             end
             if x > 238 and x < 624 and y > 250 and y < 336 then
-                worldState = 3
+                world.state = 3
             end
         end
         return
     end
-    if worldState == 3 then
+    if world.state == 3 then
         if button == 1 then 
             if x > 604 and x < 794 and y > 464  and y < 518 then
-                worldState = 1
+                world.state = 1
             end
         end
         return
@@ -211,10 +223,10 @@ love.mousepressed =function (x, y, button, istouch)
      end
 
 love.update = function (deltaTime)
-    if worldState == 1 then
+    if world.state == 1 then
         return
     end
-    if worldState == 3 then
+    if world.state == 3 then
         return
     end
     inventory.inventoryOutputString = generalFun.InventoryToString(inventory)
@@ -264,10 +276,10 @@ love.update = function (deltaTime)
             if generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index]) ~= false and farmer.HandAbelToHit == true then
                 farmer.HandAbelToHit = false
                 objects[index][generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health = objects[index][generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health - 1
+                farmer.huitSound:play()
                 if objects[index][generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].health <= 0 then
                     for index2, value in ipairs(items) do
                         if items[index2].type == objects[index].type then
-
                             table.insert(items[index2], 
                             {["x"] = objects[index][generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].x,
                              ["y"] = objects[index][generalFun.cirkleKolider(farmer.handX,farmer.handY,farmer.handSize,objects[index])].y,
@@ -296,11 +308,11 @@ love.update = function (deltaTime)
 end
 
 love.draw=function ()
-    if worldState == 1 then
+    if world.state == 1 then
         love.graphics.draw(startScreen, 0,0,0,1,1,0,0)
         return
     end
-    if worldState == 3 then
+    if world.state == 3 then
         love.graphics.draw(tutorialScreen, 0,0,0,1,1,0,0)
         return
     end
