@@ -21,12 +21,12 @@ love.load = function ()
         ["movmentY"]= 0,
         ["positionX"]= 400,
         ["positionY"]= 300,
-        ["farmerSize"]= 20,
+        ["farmerSize"]= 15,
         ["sped"]= 100,
         ["handY"]= 200,
         ["handX"]= 300,
-        ["handSize"]= 10,
-        ["hand_distens"]= 30,
+        ["handSize"]= 8,
+        ["hand_distens"]= 25,
         ["isHand"]= false,
         ["HandAbelToHit"]= true,
         ["huitSound"]= love.audio.newSource("sound/hit.wav" , "stream"),
@@ -69,6 +69,12 @@ love.load = function ()
             ["spawnChanse"] = 0,
             ["size"]=8,
             ["amount"]= 4
+        },
+        {
+            ["type"] = "spike",
+            ["spawnChanse"] = 0,
+            ["size"]=8,
+            ["amount"]= 4
         }
 
     }
@@ -104,7 +110,7 @@ love.load = function ()
         {
             ["type"] = "wall",
             ["color"] = {1, 1, 1},
-            ["offset"] = 5,
+            ["offset"] = 8,
             ["sprite"] = love.graphics.newImage("Assets/struktures/wall.png"),
             ["drotype"] = "wood",
             -- {["x"] = 60 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5 },
@@ -113,12 +119,22 @@ love.load = function ()
         {
             ["type"] = "barel",
             ["color"] = {1, 1, 1},
-            ["offset"] = 5,
+            ["offset"] = 16,
             ["sprite"] = love.graphics.newImage("Assets/struktures/barel.png"),
             ["drotype"] = "wood",
             -- {["x"] = 60 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5 },
             -- {["x"] = 100 ,["y"] = 75,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
+        },
+        {
+            ["type"] = "spike",
+            ["color"] = {1, 1, 1},
+            ["offset"] = 16,
+            ["sprite"] = love.graphics.newImage("Assets/struktures/spike.png"),
+            ["drotype"] = "wood",
+            -- {["x"] = 60 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5 },
+            -- {["x"] = 100 ,["y"] = 75,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
         }
+
 
     }
     craftebols = {
@@ -140,6 +156,13 @@ love.load = function ()
             ["type"] = "barel",
             ["gridSize"] = 16,
             ["iconSprite"] = love.graphics.newImage("Assets/struktures/struktureIcons/barel.png"),
+            ["resorsType"] = "wood",
+            ["resorsAmount"] = 5
+        },
+        {
+            ["type"] = "spike",
+            ["gridSize"] = 16,
+            ["iconSprite"] = love.graphics.newImage("Assets/struktures/struktureIcons/spike.png"),
             ["resorsType"] = "wood",
             ["resorsAmount"] = 5
         }
@@ -171,7 +194,7 @@ love.load = function ()
         ["outputPosisionY"] = 50,
         {
             ["type"] = "wood",
-            ["amount"] = 0,
+            ["amount"] = 100,
             ["icon"] = love.graphics.newImage("Assets/drops/majskolv.png")
         },
         {
@@ -433,7 +456,9 @@ love.draw=function ()
     end
     if craftebols.isPlasing then
         local x, y = love.mouse.getPosition()
+        love.graphics.setColor(1,1,1,0.5)
         love.graphics.draw(craftebols.cureentlyPlasingSprite,x,y)
+        love.graphics.setColor(1,1,1)
     end
     --overlais--
     love.graphics.setColor(1, 1, 1)
