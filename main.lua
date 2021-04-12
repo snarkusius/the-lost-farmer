@@ -57,7 +57,20 @@ love.load = function ()
             ["spawnChanse"] = 10,
             ["size"]=10,
             ["amount"]= 4
+        },
+        {
+            ["type"] = "wall",
+            ["spawnChanse"] = 0,
+            ["size"]=8,
+            ["amount"]= 4
+        },
+        {
+            ["type"] = "barel",
+            ["spawnChanse"] = 0,
+            ["size"]=8,
+            ["amount"]= 4
         }
+
     }
     
     objects = {
@@ -89,15 +102,47 @@ love.load = function ()
             {["x"] = 100 ,["y"] = 100,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
         },
         {
+            ["type"] = "wall",
+            ["color"] = {1, 1, 1},
+            ["offset"] = 5,
+            ["sprite"] = love.graphics.newImage("Assets/struktures/wall.png"),
+            ["drotype"] = "wood",
+            -- {["x"] = 60 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5 },
+            -- {["x"] = 100 ,["y"] = 75,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
+        },
+        {
             ["type"] = "barel",
             ["color"] = {1, 1, 1},
             ["offset"] = 5,
             ["sprite"] = love.graphics.newImage("Assets/struktures/barel.png"),
             ["drotype"] = "wood",
-            {["x"] = 60 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5 },
-            {["x"] = 100 ,["y"] = 75,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
+            -- {["x"] = 60 ,["y"] = 50 ,["size"]=10 ,["health"]= 4 ,["amount"] = 5 },
+            -- {["x"] = 100 ,["y"] = 75,["size"]=10 ,["health"]= 4 ,["amount"] = 5}
         }
 
+    }
+    craftebols = {
+        ["craftebolIconLockationX"] = 10,
+        ["craftebolIconLockationY"] = 10,
+        ["iconSize"] = 32,
+        ["cureentlyPlasing"] = 1,
+        ["cureentlyPlasingSprite"] = love.graphics.newImage("Assets/struktures/barel.png"),
+        ["isPlasing"] = false,
+        ["spaseClear"] = true,
+        {
+            ["type"] = "wall",
+            ["gridSize"] = 16,
+            ["iconSprite"] = love.graphics.newImage("Assets/struktures/struktureIcons/wall.png"),
+            ["resorsType"] = "wood",
+            ["resorsAmount"] = 5
+        },
+        {
+            ["type"] = "barel",
+            ["gridSize"] = 16,
+            ["iconSprite"] = love.graphics.newImage("Assets/struktures/struktureIcons/barel.png"),
+            ["resorsType"] = "wood",
+            ["resorsAmount"] = 5
+        }
     }
     
     items = {
@@ -122,7 +167,7 @@ love.load = function ()
     }
     inventory = {
         ["inventoryOutputString"] = "",
-        ["outputPosisionX"] = 750,
+        ["outputPosisionX"] = 725,
         ["outputPosisionY"] = 50,
         {
             ["type"] = "wood",
@@ -206,21 +251,62 @@ love.mousepressed =function (x, y, button, istouch)
         end
         return
     end
-        if button == 1 and farmer.isHand == false then 
-            if farmer.positionX < x then
+    --clicing icons--
+    if x > craftebols.craftebolIconLockationX and x < craftebols.craftebolIconLockationX + craftebols.iconSize and y > craftebols.craftebolIconLockationY and y <craftebols.craftebolIconLockationY + craftebols.iconSize * #craftebols then
+        craftebols.cureentlyPlasing = math.ceil((y - craftebols.craftebolIconLockationY) / craftebols.iconSize)
+        for index, value in ipairs(objects) do
+            if craftebols[math.ceil((y - craftebols.craftebolIconLockationY) / craftebols.iconSize)].type == objects[index].type then
+                craftebols.cureentlyPlasingSprite = objects[index].sprite
+                for Index2, value in ipairs(inventory) do
+                    if inventory[Index2].type == craftebols[craftebols.cureentlyPlasing].resorsType then
+                        if inventory[Index2].amount >= craftebols[craftebols.cureentlyPlasing].resorsAmount then
+                            craftebols.isPlasing = true
+                            inventory[Index2].amount = inventory[Index2].amount - craftebols[craftebols.cureentlyPlasing].resorsAmount
+                        end
+                    end
+                end
+                
+            end
+        end
+    end
+    --placing items--
+    if button == 2 and craftebols.isPlasing then
+        for index, value in ipairs(objects) do
+            if craftebols[craftebols.cureentlyPlasing].type == objects[index].type  then
+                for index2, value in ipairs(objectPropeties) do
+                    if objectPropeties[index2].type == craftebols[craftebols.cureentlyPlasing].type then
+                        craftebols.spaseClear = true
+                        for index3, value in ipairs(objects) do
+                            if generalFun.cirkleKolider( x - (x%craftebols[craftebols.cureentlyPlasing].gridSize) , y - (y%craftebols[craftebols.cureentlyPlasing].gridSize),craftebols[craftebols.cureentlyPlasing].gridSize/2,objects[index3])~=false then
+                                craftebols.spaseClear = false
+                            end
+                        end
+                        if craftebols.spaseClear then
+                            table.insert(objects[index],{["x"] = x - (x%craftebols[craftebols.cureentlyPlasing].gridSize) ,["y"] = y - (y%craftebols[craftebols.cureentlyPlasing].gridSize),["size"]= objectPropeties[index2].size ,["health"]= 4 ,["amount"] = objectPropeties[index2].amount})
+                            craftebols.isPlasing = false
+                        end 
+                    end
+                    
+                end
+            end
+        end
+    end
+    --hitting--
+    if button == 1 and farmer.isHand == false then 
+        if farmer.positionX < x then
                 farmer.handSvingMiddel = math.atan((y - farmer.positionY)/(x - farmer.positionX ))
                 farmer.isHand = true
                 farmer.handAngel = farmer.handSvingMiddel - farmer.handSvingDistens/2 
-            end
-            if farmer.positionX > x then
+        end
+        if farmer.positionX > x then
                 farmer.handSvingMiddel = math.pi + math.atan((y - farmer.positionY)/(x - farmer.positionX ))
                 farmer.isHand = true
                 farmer.handAngel = farmer.handSvingMiddel - farmer.handSvingDistens/2 
-            end
-            farmer.HandAbelToHit = true
-    
         end
-     end
+         farmer.HandAbelToHit = true      
+    end
+end
+
 
 love.update = function (deltaTime)
     if world.state == 1 then
@@ -235,6 +321,7 @@ love.update = function (deltaTime)
         world.framerate = math.floor(1/deltaTime)
         world.timeOflastFrameUpdate = world.time
     end
+    --spawnUpdate--
     if world.time > world.timeOflastSpawnUpdate + world.spawnUpdate then
         
         world.timeOflastSpawnUpdate = world.time
@@ -332,7 +419,7 @@ love.draw=function ()
     for index, value in ipairs(objects) do
         love.graphics.setColor(objects[index].color[1], objects[index].color[2], objects[index].color[3])
         for index2, value in ipairs(objects[index]) do
-            love.graphics.circle("fill", objects[index][index2].x , objects[index][index2].y , objects[index][index2].size )
+            -- love.graphics.circle("fill", objects[index][index2].x , objects[index][index2].y , objects[index][index2].size )
             love.graphics.draw(objects[index].sprite , objects[index][index2].x,objects[index][index2].y ,0,1,1,objects[index].sprite:getWidth()/2, objects[index].sprite:getHeight() - objects[index].offset)
         end
     end
@@ -340,13 +427,21 @@ love.draw=function ()
     for index, value in ipairs(items) do
         love.graphics.setColor(items[index].color[1], items[index].color[2], items[index].color[3])
         for index2, value in ipairs(items[index]) do
-            love.graphics.circle("fill", items[index][index2].x , items[index][index2].y , items[index][index2].size)
+            -- love.graphics.circle("fill", items[index][index2].x , items[index][index2].y , items[index][index2].size)
             love.graphics.draw( items[index].dropSprite ,  items[index][index2].x, items[index][index2].y ,0,1,1, items[index].dropSprite:getWidth()/2,  items[index].dropSprite:getHeight()/2 )
         end
+    end
+    if craftebols.isPlasing then
+        local x, y = love.mouse.getPosition()
+        love.graphics.draw(craftebols.cureentlyPlasingSprite,x,y)
     end
     --overlais--
     love.graphics.setColor(1, 1, 1)
     love.graphics.print( world.framerate, world.frameratePositionX, world.frameratePositionY)
+    --craftebols--
+    for index, value in ipairs(craftebols) do
+        love.graphics.draw(craftebols[index].iconSprite,craftebols.craftebolIconLockationX,craftebols.craftebolIconLockationY + (index - 1) * craftebols.iconSize )
+    end
     --inventory--
     love.graphics.print(inventory.inventoryOutputString,inventory.outputPosisionX,inventory.outputPosisionY)
 end
