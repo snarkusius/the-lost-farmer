@@ -457,7 +457,8 @@ love.draw=function ()
     if craftebols.isPlasing then
         local x, y = love.mouse.getPosition()
         love.graphics.setColor(1,1,1,0.5)
-        love.graphics.draw(craftebols.cureentlyPlasingSprite,x,y)
+        love.graphics.draw(craftebols.cureentlyPlasingSprite,x - (x%craftebols[craftebols.cureentlyPlasing].gridSize),y - (y%craftebols[craftebols.cureentlyPlasing].gridSize)
+        
         love.graphics.setColor(1,1,1)
     end
     --overlais--
